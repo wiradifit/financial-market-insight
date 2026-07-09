@@ -9,7 +9,7 @@ import type {
 type CcxtNamespace = typeof ccxt & Record<string, new (config?: object) => Exchange>;
 
 class CryptoDataClient {
-  private exchanges: Map<string, ccxt.Exchange> = new Map();
+  private exchanges: Map<string, Exchange> = new Map();
   private defaultExchange = 'kraken';
 
   private getExchange(exchangeId: string = this.defaultExchange): Exchange {
