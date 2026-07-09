@@ -45,12 +45,9 @@ async def add_security_headers(request: Request, call_next):
 app.include_router(market_data.router, prefix="/api")
 app.include_router(signals.router, prefix="/api")
 
-@app.get("/health", tags=["System"])
+@app.get("/health")
 async def health_check():
-    return {
-        "status": "ok",
-        "timestamp": int(time.time() * 1000)
-    }
+    return {"status": "ok", "service": "signal-engine", "version": "1.0.0"}
 
 if __name__ == "__main__":
     import uvicorn

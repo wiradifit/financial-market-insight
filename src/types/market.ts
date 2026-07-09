@@ -53,6 +53,9 @@ export interface Signal {
   timeframe: string;
   message: string;
   timestamp: number;
+  entryPrice?: number;
+  tp?: number;
+  sl?: number;
 }
 
 export interface MarketOverview {

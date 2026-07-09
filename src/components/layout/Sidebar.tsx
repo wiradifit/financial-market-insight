@@ -9,6 +9,7 @@ import {
   LineChart,
   Settings,
   Target,
+  Wifi,
   X,
   type LucideIcon,
 } from 'lucide-react';
@@ -26,6 +27,7 @@ const NAV_ITEMS: NavItem[] = [
   { name: 'Stock Analysis', href: '/stocks', icon: Target },
   { name: 'Forex Market', href: '/forex', icon: Activity },
   { name: 'Settings', href: '/settings', icon: Settings },
+  { name: 'Network Monitor', href: '/network', icon: Wifi },
 ];
 
 function SidebarBody({ pathname, onNavigate }: { pathname: string; onNavigate?: () => void }) {

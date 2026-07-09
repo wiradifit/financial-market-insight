@@ -1,6 +1,6 @@
 from pydantic import BaseModel, ConfigDict
 from pydantic.alias_generators import to_camel
-from typing import List, Dict
+from typing import List, Dict, Optional
 from enum import Enum
 
 class SignalType(str, Enum):
@@ -28,6 +28,9 @@ class Signal(BaseModel):
     timeframe: str
     message: str
     timestamp: int
+    entry_price: Optional[float] = None
+    tp: Optional[float] = None
+    sl: Optional[float] = None
 
 class ScanResult(BaseModel):
     model_config = ConfigDict(alias_generator=to_camel, populate_by_name=True)

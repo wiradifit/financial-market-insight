@@ -159,6 +159,29 @@ class SignalService:
                     timestamp=current_time
                 ))
 
+        # Calculate Entry, TP, and SL for all signals
+        atr_indicator = ta.volatility.AverageTrueRange(high=df['high'], low=df['low'], close=df['close'], window=14)
+        df['atr'] = atr_indicator.average_true_range()
+        current_atr = df['atr'].iloc[-1]
+        
+        for s in signals:
+            if s.direction in (SignalDirection.BULLISH, SignalDirection.BEARISH):
+                s.entry_price = float(current_close)
+                if not np.isnan(current_atr):
+                    if s.direction == SignalDirection.BULLISH:
+                        s.sl = float(current_close - (current_atr * 1.5))
+                        s.tp = float(current_close + (current_atr * 3.0)) # 1:2 R/R
+                    else: # BEARISH
+                        s.sl = float(current_close + (current_atr * 1.5))
+                        s.tp = float(current_close - (current_atr * 3.0))
+                else:
+                    if s.direction == SignalDirection.BULLISH:
+                        s.sl = float(current_close * 0.95)
+                        s.tp = float(current_close * 1.10)
+                    else:
+                        s.sl = float(current_close * 1.05)
+                        s.tp = float(current_close * 0.90)
+
         # Fetch news and compute sentiment
         try:
             news_items = await MarketService.get_news([symbol])

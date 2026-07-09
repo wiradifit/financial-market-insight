@@ -48,6 +48,12 @@ function formatIndicatorValue(value: number): string {
   return Math.abs(value) < 1000 ? value.toFixed(2) : value.toString();
 }
 
+function formatPrice(p: number): string {
+  if (p < 0.01) return p.toPrecision(4);
+  if (p < 1000) return p.toFixed(2);
+  return p.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+
 function SignalItem({ signal }: { signal: Signal }) {
   const styles = directionStyles(signal.direction);
 
@@ -98,6 +104,25 @@ function SignalItem({ signal }: { signal: Signal }) {
       <p className="mt-4 text-sm text-[color:var(--color-text-secondary)] bg-black/20 p-3 rounded-lg border border-white/5 relative z-10">
         {signal.message}
       </p>
+
+      {signal.entryPrice && signal.tp && signal.sl && (
+        <div className="mt-3 flex items-center justify-between gap-3 relative z-10 bg-white/5 p-3 rounded-lg border border-white/5 font-mono-numbers">
+           <div className="flex-1 flex flex-col items-center">
+             <span className="text-[10px] text-[color:var(--color-text-muted)] uppercase tracking-wider mb-1 font-sans font-semibold">Entry</span>
+             <span className="text-white font-bold">${formatPrice(signal.entryPrice)}</span>
+           </div>
+           <div className="w-px h-6 bg-white/10"></div>
+           <div className="flex-1 flex flex-col items-center">
+             <span className="text-[10px] text-[color:var(--color-gain)] uppercase tracking-wider mb-1 font-sans font-semibold">Take Profit</span>
+             <span className="text-[color:var(--color-gain)] font-bold">${formatPrice(signal.tp)}</span>
+           </div>
+           <div className="w-px h-6 bg-white/10"></div>
+           <div className="flex-1 flex flex-col items-center">
+             <span className="text-[10px] text-[color:var(--color-loss)] uppercase tracking-wider mb-1 font-sans font-semibold">Stop Loss</span>
+             <span className="text-[color:var(--color-loss)] font-bold">${formatPrice(signal.sl)}</span>
+           </div>
+        </div>
+      )}
 
       <div className="mt-3 flex flex-wrap gap-2 relative z-10">
         {Object.entries(signal.indicatorValues).map(([key, value]) => (
