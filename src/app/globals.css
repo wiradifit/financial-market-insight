@@ -229,3 +229,110 @@ body {
   border-radius: 2px;
   transition: width 0.5s ease;
 }
+
+/* ---------- Microinteractions ---------- */
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes border-glow-pulse {
+  0%, 100% { border-color: rgba(59, 130, 246, 0.1); }
+  50% { border-color: rgba(59, 130, 246, 0.25); }
+}
+
+.animate-enter {
+  animation: fade-in-up 0.3s ease-out both;
+}
+
+.animate-scale-enter {
+  animation: scale-in 0.2s ease-out both;
+}
+
+/* Stagger children */
+.animate-enter > *:nth-child(1) { animation-delay: 0ms; }
+.animate-enter > *:nth-child(2) { animation-delay: 50ms; }
+.animate-enter > *:nth-child(3) { animation-delay: 100ms; }
+.animate-enter > *:nth-child(4) { animation-delay: 150ms; }
+.animate-enter > *:nth-child(5) { animation-delay: 200ms; }
+
+/* Button ring on focus */
+button:focus-visible {
+  outline: 2px solid rgba(59, 130, 246, 0.5);
+  outline-offset: 2px;
+  border-radius: var(--radius-md);
+}
+
+/* Input ring on focus */
+input:focus-visible {
+  outline: none;
+}
+
+/* Select text color */
+::selection {
+  background: rgba(59, 130, 246, 0.25);
+  color: white;
+}
+
+/* Link underline animation */
+.link-underline {
+  text-decoration: none;
+  background-image: linear-gradient(currentColor, currentColor);
+  background-position: 0 100%;
+  background-repeat: no-repeat;
+  background-size: 0 1px;
+  transition: background-size 0.3s ease;
+}
+
+.link-underline:hover {
+  background-size: 100% 1px;
+}
+
+/* Surface hover lift */
+.hover-lift {
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.hover-lift:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-card-hover);
+  border-color: var(--color-border-secondary);
+}
+
+/* Smooth page transition */
+@keyframes page-enter {
+  from {
+    opacity: 0;
+    filter: blur(2px);
+  }
+  to {
+    opacity: 1;
+    filter: blur(0);
+  }
+}
+
+.page-transition {
+  animation: page-enter 0.35s ease-out both;
+}
+
+/* TradingView chart border glow */
+.chart-glow {
+  box-shadow: 0 0 30px rgba(59, 130, 246, 0.06);
+}

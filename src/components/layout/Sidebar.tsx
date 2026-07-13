@@ -5,6 +5,8 @@ import { usePathname } from 'next/navigation';
 import { useEffect } from 'react';
 import {
   Activity,
+  BarChart3,
+  BellRing,
   LayoutDashboard,
   LineChart,
   Settings,
@@ -23,10 +25,11 @@ interface NavItem {
 
 const NAV_ITEMS: NavItem[] = [
   { name: 'Dashboard', href: '/', icon: LayoutDashboard },
+  { name: 'Chart', href: '/crypto', icon: BarChart3 },
   { name: 'Crypto Signals', href: '/crypto', icon: LineChart },
   { name: 'Stock Analysis', href: '/stocks', icon: Target },
   { name: 'Forex Market', href: '/forex', icon: Activity },
-  { name: 'Settings', href: '/settings', icon: Settings },
+  { name: 'Notifications', href: '/settings', icon: BellRing },
   { name: 'Network Monitor', href: '/network', icon: Wifi },
 ];
 
@@ -34,14 +37,14 @@ function SidebarBody({ pathname, onNavigate }: { pathname: string; onNavigate?: 
   return (
     <>
       <div className="flex items-center justify-between p-6">
-        <h1 className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-500">
-          Financial Insight
+        <h1 className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-purple-400 to-purple-500">
+          Market Insight
         </h1>
         {onNavigate && (
           <button
             type="button"
             aria-label="Close navigation"
-            className="md:hidden text-[color:var(--color-text-secondary)] hover:text-white"
+            className="md:hidden text-[color:var(--color-text-secondary)] hover:text-white transition-colors"
             onClick={onNavigate}
           >
             <X size={22} />
@@ -49,26 +52,29 @@ function SidebarBody({ pathname, onNavigate }: { pathname: string; onNavigate?: 
         )}
       </div>
 
-      <nav className="flex-1 px-4 space-y-2 mt-4">
+      <nav className="flex-1 px-4 space-y-1 mt-4">
         {NAV_ITEMS.map(item => {
           const isActive = pathname === item.href;
           const Icon = item.icon;
           return (
             <Link
-              key={item.name}
+              key={item.name + item.href}
               href={item.href}
               onClick={onNavigate}
-              className={`flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 ${
+              className={`flex items-center space-x-3 px-4 py-2.5 rounded-xl transition-all duration-200 ${
                 isActive
                   ? 'bg-blue-500/10 text-blue-400 shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)]'
                   : 'text-[color:var(--color-text-secondary)] hover:bg-white/5 hover:text-white'
               }`}
             >
               <Icon
-                size={20}
+                size={18}
                 className={isActive ? 'text-blue-400' : 'text-[color:var(--color-text-secondary)]'}
               />
-              <span className="font-medium">{item.name}</span>
+              <span className="font-medium text-sm">{item.name}</span>
+              {item.name === 'Notifications' && (
+                <span className="ml-auto w-1.5 h-1.5 rounded-full bg-amber-500 shadow-[0_0_6px_rgba(245,158,11,0.5)]" />
+              )}
             </Link>
           );
         })}
@@ -90,19 +96,16 @@ export function Sidebar() {
   const mobileNavOpen = useUIStore(s => s.mobileNavOpen);
   const setMobileNav = useUIStore(s => s.setMobileNav);
 
-  // Close mobile nav on route change
   useEffect(() => {
     setMobileNav(false);
   }, [pathname, setMobileNav]);
 
   return (
     <>
-      {/* Desktop sidebar */}
       <aside className="glass-panel w-64 h-full hidden md:flex flex-col rounded-r-2xl rounded-l-none border-r border-y-0 border-l-0">
         <SidebarBody pathname={pathname} />
       </aside>
 
-      {/* Mobile overlay + drawer */}
       {mobileNavOpen && (
         <div className="md:hidden fixed inset-0 z-40 flex">
           <div

@@ -11,6 +11,8 @@ import {
 import type { Signal } from '@/types/market';
 import { signalApiClient } from '@/lib/data/signal-api-client';
 import { timeAgo } from '@/lib/utils/format';
+import { useNotificationStore, type SignalAlert } from '@/lib/stores/notifications';
+import { useEffect, useRef } from 'react';
 
 function directionStyles(direction: Signal['direction']) {
   switch (direction) {
@@ -204,6 +206,44 @@ export function SignalFeed() {
     },
     refetchInterval: 60_000,
   });
+
+  const addAlerts = useNotificationStore((s) => s.addAlerts);
+  const prevDataRef = useRef<Signal[] | undefined>(undefined);
+
+  useEffect(() => {
+    if (!data || data.length === 0) return;
+
+    const prevKeys = new Set(
+      (prevDataRef.current ?? []).map(
+        (s) => `${s.symbol}-${s.signalType}-${s.direction}`
+      )
+    );
+
+    const newAlerts: SignalAlert[] = [];
+    for (const signal of data) {
+      const key = `${signal.symbol}-${signal.signalType}-${signal.direction}`;
+      if (!prevKeys.has(key) && signal.confidence >= 50) {
+        newAlerts.push({
+          id: `${key}-${signal.timestamp}`,
+          symbol: signal.symbol,
+          direction: signal.direction,
+          signalType: signal.signalType,
+          confidence: signal.confidence,
+          message: signal.message,
+          entryPrice: signal.entryPrice,
+          tp: signal.tp,
+          sl: signal.sl,
+          timestamp: signal.timestamp,
+        });
+      }
+    }
+
+    if (newAlerts.length > 0) {
+      addAlerts(newAlerts);
+    }
+
+    prevDataRef.current = data;
+  }, [data, addAlerts]);
 
   const showEmpty = !isLoading && !error && data && data.length === 0;
 

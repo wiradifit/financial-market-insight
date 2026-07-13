@@ -130,4 +130,4 @@ class SignalApiClient {
 }
 
 export const signalApiClient = new SignalApiClient();
-export { SignalApiError };
+export { SignalApiError, SignalApiClient };
