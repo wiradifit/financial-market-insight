@@ -14,12 +14,14 @@ interface NetworkService {
   icon: any;
 }
 
+const SIGNAL_API_URL = process.env.NEXT_PUBLIC_SIGNAL_API_URL || 'http://localhost:8000';
+
 const INITIAL_SERVICES: NetworkService[] = [
   {
     id: 'nextjs-api',
     name: 'Next.js Frontend API',
     type: 'http',
-    url: '/api/crypto/tickers', // Just a quick endpoint to ping
+    url: '/api/crypto/tickers',
     status: 'checking',
     icon: Server
   },
@@ -27,7 +29,7 @@ const INITIAL_SERVICES: NetworkService[] = [
     id: 'python-engine',
     name: 'Python Signal Engine',
     type: 'http',
-    url: 'http://localhost:8000/health',
+    url: `${SIGNAL_API_URL}/health`,
     status: 'checking',
     icon: Database
   },
@@ -56,7 +58,7 @@ export function NetworkMonitor() {
     const start = Date.now();
     try {
       // Use no-cors for external APIs like Yahoo just to see if they resolve and respond
-      const res = await fetch(service.url, { method: 'GET', mode: service.url.startsWith('http://localhost') || service.url.startsWith('/') ? 'cors' : 'no-cors' });
+      const res = await fetch(service.url, { method: 'GET', mode: service.url.startsWith('/') ? 'cors' : 'no-cors' });
       const latency = Date.now() - start;
       return { status: 'online', latency, lastChecked: new Date() };
     } catch (error) {
